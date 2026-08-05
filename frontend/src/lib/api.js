@@ -1,28 +1,28 @@
 const API_URL = import.meta.env.VITE_API_URL || '/api'
 
-export async function apiRequest(path, { method = 'GET', body, token } = {}) {
-  try {
-    const response = await fetch(`${API_URL}${path}`, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: body ? JSON.stringify(body) : undefined,
-    })
+export async function apiRequest(path, options = {}) {
+  const url = new URL(path, API_URL).toString()
 
-    const payload = await response.json().catch(() => ({}))
+  console.log("API_URL:", API_URL)
+  console.log("PATH:", path)
+  console.log("FINAL URL:", url)
 
-    if (!response.ok) {
-      throw new Error(payload.message || 'Request failed')
-    }
+  const response = await fetch(url, {
+    method: options.method || 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options.token
+        ? { Authorization: `Bearer ${options.token}` }
+        : {}),
+    },
+    body: options.body ? JSON.stringify(options.body) : undefined,
+  })
 
-    return payload
-  } catch (error) {
-    if (error instanceof TypeError) {
-      throw new Error('Unable to reach the backend. Start the API server and try again.')
-    }
+  const payload = await response.json().catch(() => ({}))
 
-    throw error
+  if (!response.ok) {
+    throw new Error(payload.message || 'Request failed')
   }
+
+  return payload
 }
