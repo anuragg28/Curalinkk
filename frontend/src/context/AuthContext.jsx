@@ -46,7 +46,7 @@ export function AuthProvider({ children }) {
   }, [token])
 
   async function signIn(values) {
-    const data = await apiRequest('/auth/signin', {
+    const data = await apiRequest('api/auth/signin', {
       method: 'POST',
       body: values,
     })
@@ -59,7 +59,7 @@ export function AuthProvider({ children }) {
   }
 
   async function signUp(values) {
-    const data = await apiRequest('/auth/signup', {
+    const data = await apiRequest('api/auth/signup', {
       method: 'POST',
       body: values,
     })
